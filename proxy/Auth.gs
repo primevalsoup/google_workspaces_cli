@@ -47,8 +47,7 @@ function verifyJwt(token) {
 
   // 4. Compute HMAC-SHA256
   var signingInput = headerB64 + '.' + payloadB64;
-  var secretBytes = Utilities.newBlob(secret).getBytes();
-  var hmacBytes = Utilities.computeHmacSha256Signature(signingInput, secretBytes);
+  var hmacBytes = Utilities.computeHmacSha256Signature(signingInput, secret);
 
   // 5. Base64url-encode the HMAC
   var expectedSignature = base64urlEncode(hmacBytes);

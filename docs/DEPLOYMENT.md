@@ -34,7 +34,7 @@ See [proxy/SETUP.md](../proxy/SETUP.md) for detailed step-by-step instructions.
 ## 3. Install the CLI
 
 ```bash
-npm install -g gproxy
+npm install -g @primevalsoup/gwspace-cli
 ```
 
 ## 4. Configure the CLI

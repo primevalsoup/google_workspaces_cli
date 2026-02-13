@@ -5,5 +5,7 @@ dist/
 *.js.map
 *.d.ts.map
 !cli/src/**
+cli/src/deploy/proxy-files.generated.ts
 .env
 .gproxy/
+.clasp.json

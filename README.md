@@ -52,9 +52,12 @@ Access Gmail, Calendar, Drive, Docs, Sheets, Slides, Contacts, Tasks, People, Gr
 
 ```bash
 # Install
-npm install -g gproxy
+npm install -g @primevalsoup/gwspace-cli
 
-# Configure (interactive setup)
+# Deploy the Apps Script proxy (interactive installer)
+gproxy deploy
+
+# Or configure manually if proxy is already deployed
 gproxy setup
 
 # Verify
@@ -123,6 +126,7 @@ See [docs/SECURITY.md](docs/SECURITY.md) for the full security model and threat 
 
 ## Documentation
 
+- [Quickstart](docs/QUICKSTART.md) — Step-by-step deploy walkthrough with every screen
 - [Architecture](docs/ARCHITECTURE.md) — Data flow, Apps Script constraints, design decisions
 - [Security](docs/SECURITY.md) — JWT details, threat model, IP allowlisting
 - [API Reference](docs/API.md) — Every service, action, and parameter documented

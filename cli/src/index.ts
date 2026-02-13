@@ -14,6 +14,7 @@ import { registerChatCommands } from './commands/chat.js';
 import { registerClassroomCommands } from './commands/classroom.js';
 import { registerAdminCommands } from './commands/admin.js';
 import { registerSetupCommand } from './commands/setup.js';
+import { registerDeployCommand } from './deploy/index.js';
 
 const program = new Command();
 
@@ -44,5 +45,6 @@ registerChatCommands(program);
 registerClassroomCommands(program);
 registerAdminCommands(program);
 registerSetupCommand(program);
+registerDeployCommand(program);
 
 program.parse();

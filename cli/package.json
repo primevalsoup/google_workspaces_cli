@@ -1,5 +1,5 @@
 {
-  "name": "gproxy",
+  "name": "@primevalsoup/gwspace-cli",
   "version": "1.0.0",
   "description": "Google Workspace CLI via Apps Script Proxy",
   "main": "dist/index.js",
@@ -7,6 +7,7 @@
     "gproxy": "dist/index.js"
   },
   "scripts": {
+    "prebuild": "tsx scripts/bundle-proxy.ts",
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run",
@@ -14,12 +15,14 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
     "chalk": "^5.3.0",
     "commander": "^12.0.0",
     "ora": "^8.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
   },
