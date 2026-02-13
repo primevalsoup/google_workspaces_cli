@@ -56,8 +56,14 @@ export function registerSetupCommand(program: Command): void {
       const secret = secretInput || generatedSecret;
 
       // Step 4: Save config
-      saveConfig({ proxy_url, secret });
-      process.stderr.write(chalk.green('\nConfiguration saved to ~/.gproxy/config.json\n\n'));
+      const { store } = saveConfig({ proxy_url, secret });
+      if (store === 'keychain') {
+        process.stderr.write(chalk.green('\nCredentials saved to OS keychain (service: gproxy)\n\n'));
+      } else if (store === 'encrypted') {
+        process.stderr.write(chalk.green('\nCredentials saved to encrypted store (~/.gproxy/credentials.enc)\n\n'));
+      } else {
+        process.stderr.write(chalk.green('\nConfiguration saved to ~/.gproxy/config.json\n\n'));
+      }
 
       // Step 5: Test connectivity
       process.stderr.write('Testing connection...\n');

@@ -248,8 +248,14 @@ async function runDeploy(opts: DeployOptions): Promise<void> {
     process.stderr.write(chalk.dim(`  Deployment ID: ${deploymentId}\n`));
 
     // Save CLI config
-    saveConfig({ proxy_url: webAppUrl, secret: config.jwtSecret });
-    process.stderr.write(chalk.dim('  CLI config saved to ~/.gproxy/config.json\n'));
+    const { store } = saveConfig({ proxy_url: webAppUrl, secret: config.jwtSecret });
+    if (store === 'keychain') {
+      process.stderr.write(chalk.dim('  Credentials saved to OS keychain\n'));
+    } else if (store === 'encrypted') {
+      process.stderr.write(chalk.dim('  Credentials saved to encrypted store\n'));
+    } else {
+      process.stderr.write(chalk.dim('  CLI config saved to ~/.gproxy/config.json\n'));
+    }
 
     // Save deployment metadata
     const meta: DeploymentMetadata = {
