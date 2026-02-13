@@ -171,6 +171,7 @@ export const CORE_FILES = [
   'Config.gs',
   'Logger.gs',
   'Utils.gs',
+  'SecurityFilter.gs',
   'Admin.gs',
 ];
 

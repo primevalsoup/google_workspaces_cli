@@ -48,6 +48,10 @@ function gmailSearch(params) {
   var results = [];
   for (var i = 0; i < threads.length; i++) {
     var t = threads[i];
+    if (isSecurityThread(t)) {
+      logSecurityIntercept('search', 'Filtered thread ' + t.getId());
+      continue;
+    }
     var messages = t.getMessages();
     var first = messages[0];
     var last = messages[messages.length - 1];
@@ -82,6 +86,10 @@ function gmailMessageSearch(params) {
     var msgs = threads[i].getMessages();
     for (var j = 0; j < msgs.length; j++) {
       var m = msgs[j];
+      if (isSecurityEmail(m)) {
+        logSecurityIntercept('messageSearch', 'Filtered message ' + m.getId());
+        continue;
+      }
       var item = {
         messageId: m.getId(),
         threadId: threads[i].getId(),
@@ -112,6 +120,11 @@ function gmailGet(params) {
   var thread = GmailApp.getThreadById(params.threadId);
   if (!thread) {
     return errorResponse('NOT_FOUND', 'Thread not found: ' + params.threadId, false);
+  }
+
+  if (isSecurityThread(thread)) {
+    logSecurityIntercept('get', 'Blocked access to thread ' + params.threadId);
+    return errorResponse('FORBIDDEN', 'Access to this thread is restricted by security policy', false);
   }
 
   var messages = thread.getMessages();
@@ -227,6 +240,11 @@ function gmailThreadModify(params) {
   if (err) return err;
   var thread = GmailApp.getThreadById(params.threadId);
   if (!thread) return errorResponse('NOT_FOUND', 'Thread not found', false);
+
+  if (isSecurityThread(thread)) {
+    logSecurityIntercept('thread.modify', 'Blocked modify on thread ' + params.threadId);
+    return errorResponse('FORBIDDEN', 'Modifying this thread is restricted by security policy', false);
+  }
 
   if (params.addLabels) {
     var labels = params.addLabels;

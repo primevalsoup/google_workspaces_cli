@@ -7,7 +7,9 @@ var CONFIG_DEFAULTS_ = {
   LOG_MAX_ROWS: '5000',
   IP_ALLOWLIST: '',
   IP_CHECK_ENABLED: 'false',
-  IP_CHECK_THRESHOLD: '50'
+  IP_CHECK_THRESHOLD: '50',
+  SECURITY_BLOCKED_SENDERS: 'no-reply@accounts.google.com,google-noreply@google.com,mail-noreply@google.com',
+  SECURITY_CONTENT_REGEX: '(password\\s*reset|verification\\s*code|recovery\\s*link|one-time\\s*password|otp|confirm\\s*your\\s*identity|security\\s*alert)'
 };
 
 var CONFIG_KEYS_ = [
@@ -18,7 +20,9 @@ var CONFIG_KEYS_ = [
   'LOG_MAX_ROWS',
   'IP_CHECK_ENABLED',
   'IP_CHECK_API_KEY',
-  'IP_CHECK_THRESHOLD'
+  'IP_CHECK_THRESHOLD',
+  'SECURITY_BLOCKED_SENDERS',
+  'SECURITY_CONTENT_REGEX'
 ];
 
 /**

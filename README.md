@@ -29,6 +29,7 @@ Access Gmail, Calendar, Drive, Docs, Sheets, Slides, Contacts, Tasks, People, Gr
 - **No GCP project setup** — Apps Script runs under your Google account with no Cloud Console configuration
 - **Zero-trust design** — every request is authenticated with a shared secret (HS256 JWT, 5-minute expiry)
 - **Runtime-configurable** — change allowed IPs, logging, and secrets via Script Properties without redeploying
+- **Security filtering** — the proxy intercepts account recovery emails (password resets, verification codes, security alerts) and hides them from the agent, preventing credential theft or suppression of login alerts
 
 ## Features
 
