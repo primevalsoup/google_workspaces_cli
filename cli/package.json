@@ -2,7 +2,24 @@
   "name": "@primevalsoup/gwspace-cli",
   "version": "1.0.0",
   "description": "Google Workspace CLI via Apps Script Proxy",
+  "author": "primevalsoup",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/primevalsoup/google_workspaces_cli"
+  },
+  "keywords": [
+    "google-workspace",
+    "gmail",
+    "google-calendar",
+    "google-drive",
+    "apps-script",
+    "cli"
+  ],
   "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "bin": {
     "gproxy": "dist/index.js"
   },
