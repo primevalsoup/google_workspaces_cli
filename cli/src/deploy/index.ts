@@ -1,5 +1,4 @@
 import crypto from 'node:crypto';
-import { execSync } from 'node:child_process';
 import { Command } from 'commander';
 import chalk from 'chalk';
 import { confirm, select } from '@inquirer/prompts';
@@ -15,14 +14,7 @@ import { runHealthCheck } from './health-check.js';
 import { saveConfig } from '../config.js';
 import { generateManifest, generateRouterGs, generateInitCodeGs } from './generators.js';
 import { getProxyFile } from './proxy-files.js';
-
-function openUrl(url: string): void {
-  try {
-    execSync(`open "${url}"`, { stdio: 'ignore' });
-  } catch {
-    // Silently fail — user can open manually
-  }
-}
+import { openUrl } from '../open-url.js';
 
 async function postInitSecret(webAppUrl: string, secret: string): Promise<boolean> {
   try {
@@ -211,10 +203,14 @@ async function runDeploy(opts: DeployOptions): Promise<void> {
       // Authorization needed — open the script editor so user can run a function
       const editorUrl = `https://script.google.com/d/${scriptId}/edit`;
       process.stderr.write(chalk.yellow('\n  Authorization required before setting JWT_SECRET.\n'));
-      process.stderr.write(chalk.dim('  Opening the Apps Script editor...\n'));
-      process.stderr.write(chalk.dim('  Please select the doGet function and click "Run" to trigger authorization.\n'));
-      process.stderr.write(chalk.dim('  Then approve the permissions in the popup.\n\n'));
-      openUrl(editorUrl);
+      const opened = openUrl(editorUrl);
+      if (opened) {
+        process.stderr.write(chalk.dim('  Please select the doGet function and click "Run" to trigger authorization.\n'));
+        process.stderr.write(chalk.dim('  Then approve the permissions in the popup.\n\n'));
+      } else {
+        process.stderr.write(chalk.dim('  Select the doGet function and click "Run" to trigger authorization.\n'));
+        process.stderr.write(chalk.dim('  Then approve the permissions in the popup.\n\n'));
+      }
 
       const authorized = await confirm({
         message: 'I\'ve authorized the app — continue?',

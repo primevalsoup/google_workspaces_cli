@@ -1,7 +1,8 @@
-import { execFileSync, execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import type { ClaspResult } from './types.js';
+import { openUrl } from '../open-url.js';
 
 export class AppsScriptApiDisabledError extends Error {
   constructor() {
@@ -117,18 +118,11 @@ export function claspDeploy(
 }
 
 export function claspOpen(cwd: string): void {
-  // Open the Apps Script project in the default browser
   const claspJsonPath = path.join(cwd, '.clasp.json');
   if (fs.existsSync(claspJsonPath)) {
     const { scriptId } = JSON.parse(fs.readFileSync(claspJsonPath, 'utf-8'));
     if (scriptId) {
-      const url = `https://script.google.com/d/${scriptId}/edit`;
-      try {
-        // macOS
-        execSync(`open "${url}"`, { stdio: 'ignore' });
-      } catch {
-        // Silently fail — user can open manually
-      }
+      openUrl(`https://script.google.com/d/${scriptId}/edit`);
     }
   }
 }

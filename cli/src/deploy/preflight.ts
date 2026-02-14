@@ -1,9 +1,10 @@
-import { execFileSync, execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import os from 'node:os';
 import path from 'node:path';
 import fs from 'node:fs';
 import chalk from 'chalk';
 import { confirm } from '@inquirer/prompts';
+import { openUrl } from '../open-url.js';
 
 interface PreflightResult {
   ok: boolean;
@@ -82,13 +83,6 @@ function isAppsScriptApiEnabled(claspPath: string): boolean {
   }
 }
 
-function openUrl(url: string): void {
-  try {
-    execSync(`open "${url}"`, { stdio: 'ignore' });
-  } catch {
-    // Silently fail
-  }
-}
 
 function extractOutput(err: unknown): string {
   if (err && typeof err === 'object') {
@@ -154,16 +148,7 @@ export async function runPreflight(): Promise<PreflightResult> {
   if (!isAppsScriptApiEnabled(realClasp)) {
     const settingsUrl = 'https://script.google.com/home/usersettings';
     process.stderr.write(chalk.yellow('\n  The Apps Script API is not enabled for your account.\n'));
-    process.stderr.write(chalk.dim(`  You need to toggle it on at: ${settingsUrl}\n\n`));
-
-    const openBrowser = await confirm({
-      message: 'Open the settings page in your browser?',
-      default: true,
-    });
-
-    if (openBrowser) {
-      openUrl(settingsUrl);
-    }
+    openUrl(settingsUrl);
 
     await confirm({
       message: 'I\'ve enabled the Apps Script API — continue?',
