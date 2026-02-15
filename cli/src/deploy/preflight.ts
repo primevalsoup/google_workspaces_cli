@@ -4,7 +4,7 @@ import path from 'node:path';
 import fs from 'node:fs';
 import chalk from 'chalk';
 import { confirm } from '@inquirer/prompts';
-import { openUrl } from '../open-url.js';
+import { isHeadless, openUrl } from '../open-url.js';
 
 interface PreflightResult {
   ok: boolean;
@@ -100,19 +100,6 @@ export async function runPreflight(): Promise<PreflightResult> {
   let claspPath = findClasp();
 
   if (!claspPath) {
-    try {
-      execFileSync('npx', ['--yes', '@google/clasp', '--version'], {
-        encoding: 'utf-8',
-        timeout: 30000,
-        stdio: ['pipe', 'pipe', 'pipe'],
-      });
-      claspPath = 'npx';
-    } catch {
-      // Not available
-    }
-  }
-
-  if (!claspPath) {
     errors.push(
       'clasp is not installed. Install it with:\n' +
       chalk.cyan('  npm install -g @google/clasp'),
@@ -120,23 +107,19 @@ export async function runPreflight(): Promise<PreflightResult> {
     return { ok: false, claspPath: '', errors };
   }
 
-  if (claspPath !== 'npx') {
-    const version = getClaspVersion(claspPath);
-    if (version) {
-      process.stderr.write(chalk.dim(`  clasp ${version}\n`));
-    }
-  } else {
-    process.stderr.write(chalk.dim('  clasp (via npx)\n'));
+  const version = getClaspVersion(claspPath);
+  if (version) {
+    process.stderr.write(chalk.dim(`  clasp ${version}\n`));
   }
 
   // 2. Check login status
   process.stderr.write(chalk.dim('  Checking clasp login...\n'));
-  const realClasp = claspPath === 'npx' ? 'clasp' : claspPath;
 
-  if (!isLoggedIn(realClasp)) {
+  if (!isLoggedIn(claspPath)) {
+    const loginCmd = isHeadless() ? 'clasp login --no-localhost' : 'clasp login';
     errors.push(
       'Not logged into clasp. Run:\n' +
-      chalk.cyan('  clasp login'),
+      chalk.cyan(`  ${loginCmd}`),
     );
     return { ok: false, claspPath, errors };
   }
@@ -145,7 +128,7 @@ export async function runPreflight(): Promise<PreflightResult> {
   // 3. Check Apps Script API
   process.stderr.write(chalk.dim('  Checking Apps Script API...\n'));
 
-  if (!isAppsScriptApiEnabled(realClasp)) {
+  if (!isAppsScriptApiEnabled(claspPath)) {
     const settingsUrl = 'https://script.google.com/home/usersettings';
     process.stderr.write(chalk.yellow('\n  The Apps Script API is not enabled for your account.\n'));
     openUrl(settingsUrl);
@@ -155,7 +138,7 @@ export async function runPreflight(): Promise<PreflightResult> {
     });
 
     process.stderr.write(chalk.dim('  Re-checking...\n'));
-    if (!isAppsScriptApiEnabled(realClasp)) {
+    if (!isAppsScriptApiEnabled(claspPath)) {
       errors.push(
         'Apps Script API is still not enabled. Please enable it at:\n' +
         chalk.cyan(`  ${settingsUrl}\n`) +

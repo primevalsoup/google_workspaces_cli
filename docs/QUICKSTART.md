@@ -7,9 +7,8 @@ Complete walkthrough of deploying GProxy from scratch. Every step, every screen.
 | Requirement | Check |
 |-------------|-------|
 | Node.js 18+ | `node --version` |
-| clasp installed | `npm install -g @google/clasp` |
-| clasp logged in | `clasp login` |
-| Apps Script API enabled | [script.google.com/home/usersettings](https://script.google.com/home/usersettings) |
+
+The deploy command checks for remaining prerequisites (clasp, login status, Apps Script API) and will prompt you to install or configure anything that's missing.
 
 ## Install
 
@@ -44,6 +43,24 @@ The CLI verifies clasp is installed, you're logged in, and the Apps Script API i
   Apps Script API enabled
   All checks passed
 ```
+
+If clasp is not installed, the CLI will ask you to install it:
+```
+  clasp is not installed. Install it with:
+    npm install -g @google/clasp
+```
+
+If you're not logged in, the CLI will prompt you to run `clasp login`. On headless machines (no display), it will suggest `clasp login --no-localhost` instead.
+
+#### Logging in on a headless machine
+
+When you run `clasp login --no-localhost`, clasp prints an authorization URL and waits for you to paste back a redirect URL. Here's what to expect:
+
+1. Copy the authorization URL and open it in a browser on another machine
+2. Sign in and authorize the app
+3. Google redirects to `http://localhost:8888?code=...` — **this page will fail to load**, and that's expected (there is no local server to handle the redirect)
+4. Copy the full URL from your browser's address bar (including the `?code=...` part)
+5. Paste it back into the terminal prompt
 
 If the Apps Script API is not enabled, the CLI will offer to open the settings page for you.
 
